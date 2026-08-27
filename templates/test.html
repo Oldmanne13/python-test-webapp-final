@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="card">
+    <h2>{{ {'start':'Starttest', 'mid':'Midtvejstest', 'final':'Sluttest'}[phase] }}</h2>
+    <p>Besvar alle spørgsmål og aflever testen til sidst.</p>
+</div>
+
+<form method="post">
+    {% for q in questions %}
+    <div class="card question">
+        <h3>{{ loop.index }}. {{ q['prompt'] }}</h3>
+        <p class="muted">Område: {{ q['category'] }}</p>
+
+        {% if q['code'] %}
+            <pre><code>{{ q['code'] }}</code></pre>
+        {% endif %}
+
+        {% for option in q['options'] %}
+            <label class="option">
+                <input type="radio" name="q{{ q['id'] }}" value="{{ option }}" required>
+                {{ option }}
+            </label>
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+    <button type="submit">Aflever test</button>
+</form>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="card">
+    <h2>Test afleveret</h2>
+    <p><strong>Resultat:</strong> {{ r['score'] }}/{{ r['total'] }} ({{ (100 * r['score'] / r['total'])|round|int }} %)</p>
+
+    <h3>Kompetenceprofil</h3>
+    <table>
+        <thead><tr><th>Område</th><th>Resultat</th></tr></thead>
+        <tbody>
+        {% for category, values in r['cats'].items() %}
+            <tr>
+                <td>{{ category }}</td>
+                <td>{{ values[0] }}/{{ values[1] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if r['phase'] in ['start', 'final'] %}
+        <p class="muted">Der vises ikke facit til denne test.</p>
+    {% endif %}
+
+    <a class="button" href="{{ url_for('student') }}">Tilbage til dashboard</a>
+</div>
+
+{% if r['phase'] == 'mid' %}
+<div class="card">
+    <h3>Forklaringer til midtvejstesten</h3>
+    {% for q in explanations %}
+        <div class="explanation">
+            <strong>{{ loop.index }}. {{ q['prompt'] }}</strong>
+            <p>{{ q['explanation'] }}</p>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

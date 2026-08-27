@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="card">
+    <h2>Elev {{ sid }}</h2>
+    <p>Gennemfør delene på de tidspunkter læreren angiver.</p>
+
+    <div class="actions">
+        <a class="button" href="{{ url_for('background') }}">Baggrundsspørgsmål</a>
+        {% if background_done %}
+            <a class="button" href="{{ url_for('test', phase='start') }}">Starttest</a>
+        {% endif %}
+        {% if mid_open %}
+            <a class="button" href="{{ url_for('test', phase='mid') }}">Midtvejstest</a>
+        {% else %}
+            <span class="button disabled">Midtvejstest – ikke åben endnu</span>
+        {% endif %}
+        {% if final_open %}
+            <a class="button" href="{{ url_for('test', phase='final') }}">Sluttest</a>
+        {% else %}
+            <span class="button disabled">Sluttest – ikke åben endnu</span>
+        {% endif %}
+        <a class="button" href="{{ url_for('feedback') }}">Evaluering</a>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Min progression</h3>
+    <table>
+        <thead><tr><th>Del</th><th>Status/resultat</th></tr></thead>
+        <tbody>
+            <tr><td>Baggrundsspørgsmål</td><td>{{ 'Gennemført' if background_done else 'Ikke gennemført' }}</td></tr>
+            {% for phase, label in [('start','Starttest'), ('mid','Midtvejstest'), ('final','Sluttest')] %}
+            <tr>
+                <td>{{ label }}</td>
+                <td>
+                    {% if attempts.get(phase) %}
+                        {{ attempts[phase]['score'] }}/{{ attempts[phase]['total'] }}
+                        ({{ (100 * attempts[phase]['score'] / attempts[phase]['total'])|round|int }} %)
+                    {% else %}
+                        Ikke gennemført
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            <tr><td>Evaluering</td><td>{{ 'Gennemført' if feedback_done else 'Ikke gennemført' }}</td></tr>
+        </tbody>
+    </table>
+
+    {% if attempts.get('start') and attempts.get('final') %}
+        {% set start_pct = 100 * attempts['start']['score'] / attempts['start']['total'] %}
+        {% set final_pct = 100 * attempts['final']['score'] / attempts['final']['total'] %}
+        <p><strong>Udvikling fra start til slut:</strong> {{ (final_pct - start_pct)|round|int }} procentpoint.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="card">
+    <h2>Din programmeringserfaring</h2>
+    <p>Disse spørgsmål tæller ikke med i din testscore. De bruges kun til at beskrive dit udgangspunkt.</p>
+
+    <form method="post">
+        <label>Har du programmeret før?</label>
+        <label class="option"><input type="radio" name="programmed_before" value="Ja" required> Ja</label>
+        <label class="option"><input type="radio" name="programmed_before" value="Nej" required> Nej</label>
+
+        <label>Hvilke programmeringssprog eller miljøer har du arbejdet med? Du må vælge flere.</label>
+        {% for language in ['Python', 'Scratch', 'JavaScript', 'Java', 'C/C++', 'Arduino/MicroPython', 'Micro:bit'] %}
+            <label class="option"><input type="checkbox" name="languages" value="{{ language }}"> {{ language }}</label>
+        {% endfor %}
+        <label for="other_language">Andet</label>
+        <input id="other_language" name="other_language" placeholder="fx Roblox/Lua">
+
+        <label for="experience_level">Hvor meget programmeringserfaring vurderer du selv, at du har?</label>
+        <select id="experience_level" name="experience_level" required>
+            <option value="">Vælg</option>
+            <option>Ingen</option>
+            <option>Lidt</option>
+            <option>Noget</option>
+            <option>Meget</option>
+        </select>
+
+        <label for="python_experience">Har du tidligere arbejdet med Python?</label>
+        <select id="python_experience" name="python_experience" required>
+            <option value="">Vælg</option>
+            <option>Aldrig</option>
+            <option>En enkelt gang</option>
+            <option>Flere gange</option>
+            <option>Jeg har lavet egne programmer</option>
+        </select>
+
+        <label for="microcontroller_experience">Har du tidligere arbejdet med microcontrollere, fx Arduino, Raspberry Pi Pico eller Micro:bit?</label>
+        <select id="microcontroller_experience" name="microcontroller_experience" required>
+            <option value="">Vælg</option>
+            <option>Ja</option>
+            <option>Nej</option>
+        </select>
+
+        <label for="reading_confidence">Hvor tryg føler du dig ved at læse programkode? (1 = slet ikke tryg, 5 = meget tryg)</label>
+        <input id="reading_confidence" type="number" name="reading_confidence" min="1" max="5" required>
+
+        <label for="writing_confidence">Hvor tryg føler du dig ved selv at skrive programkode? (1 = slet ikke tryg, 5 = meget tryg)</label>
+        <input id="writing_confidence" type="number" name="writing_confidence" min="1" max="5" required>
+
+        <button type="submit">Gem og fortsæt</button>
+    </form>
+</div>
+{% endblock %}

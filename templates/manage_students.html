@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="card">
+    <h2>Elevliste</h2>
+    <p>En standardliste med 17 ikke-systematiske elev-ID’er samt TEST01 og TEST02 oprettes automatisk. Du kan tilføje flere pseudonymiserede elev-ID’er her, ét pr. linje. Brug ikke elevnavne.</p>
+
+    {% if message %}
+        <p class="success">{{ message }}</p>
+    {% endif %}
+
+    <form method="post">
+        <label for="student_ids">Elev-ID'er</label>
+        <textarea id="student_ids" name="student_ids" rows="10" placeholder="1X01&#10;1X02&#10;1X03"></textarea>
+        <button type="submit">Tilføj elever</button>
+    </form>
+</div>
+
+<div class="card">
+    <h3>Registrerede elev-ID'er</h3>
+    <table>
+        <thead><tr><th>Elev-ID</th><th>Handling</th></tr></thead>
+        <tbody>
+            {% for s in students %}
+            <tr>
+                <td>{{ s['student_id'] }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('delete_student', student_id=s['student_id']) }}">
+                        <button class="secondary" type="submit">Slet hvis uden data</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="2">Ingen elever registreret endnu.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

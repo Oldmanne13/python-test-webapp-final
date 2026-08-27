@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="card">
+    <h3>Testadgang</h3>
+
+    <p>
+        Midtvejstest:
+        <strong>{{ 'Åben' if mid_open else 'Lukket' }}</strong>
+    </p>
+    <form class="inline-form" method="post" action="{{ url_for('test_access', phase='mid', action='open' if not mid_open else 'close') }}">
+        <button type="submit">
+            {{ 'Luk midtvejstest' if mid_open else 'Åbn midtvejstest' }}
+        </button>
+    </form>
+
+    <p>
+        Sluttest:
+        <strong>{{ 'Åben' if final_open else 'Lukket' }}</strong>
+    </p>
+    <form class="inline-form" method="post" action="{{ url_for('test_access', phase='final', action='open' if not final_open else 'close') }}">
+        <button type="submit">
+            {{ 'Luk sluttest' if final_open else 'Åbn sluttest' }}
+        </button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Lærerdashboard</h2>
+    <p>Oversigten viser alle elev-ID'er på klasselisten, også dem der endnu ikke har taget en test.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Elev-ID</th>
+                <th>Baggrund</th>
+                <th>Start</th>
+                <th>Midtvej</th>
+                <th>Slut</th>
+                <th>Udvikling</th>
+                <th>Evaluering</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sid, data in students.items() %}
+            <tr>
+                <td><strong>{{ sid }}</strong></td>
+                <td>{{ 'Ja' if data['background'] else 'Nej' }}</td>
+                {% for phase in ['start', 'mid', 'final'] %}
+                    <td>
+                        {% if data[phase] %}
+                            {{ (100 * data[phase]['score'] / data[phase]['total'])|round|int }} %
+                        {% else %}
+                            –
+                        {% endif %}
+                    </td>
+                {% endfor %}
+                <td>
+                    {% if data['start'] and data['final'] %}
+                        {% set start_pct = 100 * data['start']['score'] / data['start']['total'] %}
+                        {% set final_pct = 100 * data['final']['score'] / data['final']['total'] %}
+                        {{ (final_pct - start_pct)|round|int }} pp
+                    {% else %}
+                        –
+                    {% endif %}
+                </td>
+                <td>{{ 'Ja' if data['feedback'] else 'Nej' }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7">Ingen elev-ID'er på listen endnu. Brug menupunktet Elevliste.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>Seneste evalueringer</h3>
+    {% for f in feedback %}
+        <div class="feedback-item">
+            <strong>{{ f['student_id'] }}</strong>
+            – Escape Room: {{ f['escape_room'] }}/5,
+            Wokwi: {{ f['wokwi'] }}/5,
+            sikkerhed: {{ f['confidence'] }}/5
+            {% if f['most_useful'] %}<br>Mest nyttigt: {{ f['most_useful'] }}{% endif %}
+            {% if f['hardest'] %}<br>Sværest: {{ f['hardest'] }}{% endif %}
+            {% if f['comment'] %}<br>Kommentar: {{ f['comment'] }}{% endif %}
+        </div>
+    {% else %}
+        <p class="muted">Ingen evalueringer endnu.</p>
+    {% endfor %}
+</div>
+{% endblock %}

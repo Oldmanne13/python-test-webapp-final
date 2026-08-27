@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="card">
+    <h2>Evaluering af forløbet</h2>
+    <form method="post">
+        <label>Hvor meget hjalp Escape Room-opgaverne dig? (1-5)</label>
+        <input type="number" name="escape" min="1" max="5" required>
+
+        <label>Hvor meget hjalp Wokwi dig? (1-5)</label>
+        <input type="number" name="wokwi" min="1" max="5" required>
+
+        <label>Hvor sikker føler du dig nu på Python? (1-5)</label>
+        <input type="number" name="confidence" min="1" max="5" required>
+
+        <label>Hvilken aktivitet lærte du mest af?</label>
+        <input name="most_useful">
+
+        <label>Hvad var det sværeste?</label>
+        <textarea name="hardest" rows="3"></textarea>
+
+        <label>Andre kommentarer</label>
+        <textarea name="comment" rows="4"></textarea>
+
+        <button type="submit">Send evaluering</button>
+    </form>
+</div>
+{% endblock %}
